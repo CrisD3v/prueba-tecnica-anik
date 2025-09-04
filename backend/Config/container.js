@@ -102,7 +102,13 @@ export function buildContainer() {
       lifetime: Lifetime.SINGLETON 
     }),
     
-
+    /**
+     * Caso de uso para obtener productos
+     * Singleton para optimizar el uso de memoria
+     */
+    getProductUseCase: asClass(GetProductUseCase, { 
+      lifetime: Lifetime.SINGLETON 
+    }),
     
     /**
      * Servicio de aplicación que orquesta casos de uso

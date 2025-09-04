@@ -78,5 +78,23 @@ export class ProductService {
     return this.createProductUseCase.execute(productData);
   }
 
-
+  /**
+   * Obtiene todos los productos disponibles en el sistema
+   * 
+   * Delega la operación al caso de uso correspondiente. En el futuro
+   * puede agregar lógica de caché, transformaciones adicionales o
+   * filtrado de datos sensibles.
+   * 
+   * @returns {Promise<Result<Product[], AppError>>} Lista de productos
+   * 
+   * @example
+   * const result = await productService.getAll();
+   * 
+   * if (result.isSuccess) {
+   *   console.log(`Total de productos: ${result.value.length}`);
+   * }
+   */
+  async getAll() {
+    return this.getProductUseCase.execute();
+  }
 }

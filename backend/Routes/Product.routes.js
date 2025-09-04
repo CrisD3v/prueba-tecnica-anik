@@ -103,5 +103,41 @@ export const buildProductRouter = ({ productService }) => {
     return res.status(201).json(result.value);
   }));
 
+  // === ENDPOINT: OBTENER TODOS LOS PRODUCTOS ===
+  
+  /**
+   * GET /products
+   * 
+   * Obtiene la lista completa de productos disponibles
+   * 
+   * 
+   * Responses:
+   * - 200: Lista de productos obtenida exitosamente
+   * - 404: No se encontraron productos
+   * - 500: Error interno del servidor
+   */
+  router.get('/', errorAsync(async (req, res) => {
+    // === INVOCACIÓN DEL SERVICIO ===
+    
+    const result = await productService.getAll();
+
+    // === MANEJO DE RESPUESTA ===
+    
+    if (result.isFailure) {
+      // Mapear error específico de "no encontrado" a 404
+      const statusCode = result.error.code === 'PRODUCT_NOT_FOUND' ? 404 : 
+                        (result.error.httpCode ?? 500);
+      
+      return res.status(statusCode).json({
+        code: result.error.code,
+        message: result.error.message
+      });
+    }
+    
+    // Respuesta exitosa con la lista de productos
+    // Status 200 indica operación exitosa
+    return res.status(200).json(result.value);
+  }));
+
   return router;
 };

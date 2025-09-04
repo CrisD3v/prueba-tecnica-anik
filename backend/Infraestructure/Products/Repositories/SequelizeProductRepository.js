@@ -124,6 +124,37 @@ export class SequelizeProductRepository {
   }
 
   /**
+   * Obtiene todos los productos de la base de datos
+   * 
+   * Recupera la lista completa de productos, convirtiéndolos a entidades
+   * de dominio. Optimizado para consultas frecuentes con índices apropiados.
+   * 
+   * @param {Transaction} transaction - Transacción de Sequelize
+   * @returns {Promise<Product[]>} Array de entidades de dominio
+   * 
+   * @example
+   * const products = await repository.getAll(transaction);
+   * console.log(`Encontrados ${products.length} productos`);
+   */
+  async getAll(transaction) {
+    try {
+      // Consultar todos los productos con ordenamiento por nombre
+      const rows = await this.ProductModel.findAll({
+        transaction,
+        order: [['name', 'ASC']], // Ordenar alfabéticamente
+        // TODO: Implementar paginación para listas grandes
+        // limit: 100, // Limitar resultados en producción
+      });
+
+      // Convertir todos los registros a entidades de dominio
+      return rows.map(row => this.#toDomain(row));
+
+    } catch (error) {
+      throw new Error(`Error obteniendo productos: ${error.message}`);
+    }
+  }
+
+  /**
    * Busca un producto por su nombre
    * 
    * Realiza una búsqueda exacta por nombre de producto. Útil para
