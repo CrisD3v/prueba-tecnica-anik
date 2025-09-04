@@ -33,8 +33,8 @@ Este proyecto consiste en una aplicación de gestión de productos que permite c
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <url-del-repositorio>
-cd proyecto-fullstack
+git clone <https://github.com/CrisD3v/prueba-anik.git>
+cd prueba-anik
 ```
 
 ### 2. Configurar el Backend
@@ -69,7 +69,7 @@ SALT_ROUNDS=10
 
 #### Configurar PostgreSQL
 ```sql
-CREATE DATABASE tu_base_de_datos;
+CREATE DATABASE api_prueba;
 CREATE USER tu_usuario WITH PASSWORD 'tu_contraseña';
 GRANT ALL PRIVILEGES ON DATABASE tu_base_de_datos TO tu_usuario;
 ```
