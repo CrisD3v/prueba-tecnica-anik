@@ -1,0 +1,18 @@
+[
+  { "id": 1,  "name": "Base de maquillaje mate 30ml (Tono 120)",     "price": 49.90, "image": "https://placehold.co/640x480?text=Base+Mate" },
+  { "id": 2,  "name": "Corrector líquido alta cobertura",            "price": 28.50, "image": "https://placehold.co/640x480?text=Corrector" },
+  { "id": 3,  "name": "Polvo compacto translúcido",                  "price": 22.99, "image": "https://placehold.co/640x480?text=Polvo+Translucido" },
+  { "id": 4,  "name": "Rubor tono durazno",                          "price": 19.95, "image": "https://placehold.co/640x480?text=Rubor" },
+  { "id": 5,  "name": "Iluminador en polvo",                         "price": 27.75, "image": "https://placehold.co/640x480?text=Iluminador" },
+  { "id": 6,  "name": "Paleta de sombras 12 tonos",                  "price": 65.00, "image": "https://placehold.co/640x480?text=Paleta+Sombras" },
+  { "id": 7,  "name": "Máscara de pestañas waterproof",              "price": 23.40, "image": "https://placehold.co/640x480?text=Mascara" },
+  { "id": 8,  "name": "Delineador líquido negro punta fina",         "price": 17.99, "image": "https://placehold.co/640x480?text=Delineador+Liquido" },
+  { "id": 9,  "name": "Delineador en gel negro",                     "price": 21.50, "image": "https://placehold.co/640x480?text=Delineador+Gel" },
+  { "id": 10, "name": "Lápiz de cejas tono medio",                   "price": 16.75, "image": "https://placehold.co/640x480?text=Lapiz+Cejas" },
+  { "id": 11, "name": "Gel fijador de cejas transparente",           "price": 18.20, "image": "https://placehold.co/640x480?text=Gel+Cejas" },
+  { "id": 12, "name": "Labial líquido mate rojo",                    "price": 24.90, "image": "https://placehold.co/640x480?text=Labial+Mate" },
+  { "id": 13, "name": "Brillo labial hidratante",                    "price": 15.99, "image": "https://placehold.co/640x480?text=Brillo+Labial" },
+  { "id": 14, "name": "Primer facial minimizador de poros",          "price": 32.00, "image": "https://placehold.co/640x480?text=Primer" },
+  { "id": 15, "name": "Spray fijador de maquillaje 100ml",           "price": 26.30, "image": "https://placehold.co/640x480?text=Spray+Fijador" },
+  { "id": 16, "name": "Desmaquillante bifásico 200ml",               "price": 19.50, "image": "https://placehold.co/640x480?text=Desmaquillante" }
+]
