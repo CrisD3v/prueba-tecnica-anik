@@ -110,6 +110,31 @@ export const env = {
   },
   
   /**
+   * Configuración de CORS (Cross-Origin Resource Sharing)
+   * Controla qué dominios pueden acceder a la API
+   */
+  CORS: {
+    /**
+     * Orígenes permitidos para requests CORS
+     * En desarrollo permite localhost con diferentes puertos
+     * En producción debe especificarse el dominio exacto
+     * 
+     * @type {string}
+     * @default 'http://localhost:3000,http://localhost:5173'
+     */
+    ALLOWED_ORIGINS: process.env.CORS_ALLOWED_ORIGINS ?? 
+      'http://localhost:3000,http://localhost:5173,http://localhost:4173,http://localhost:8080',
+    
+    /**
+     * Habilita el envío de credenciales (cookies, headers de auth)
+     * 
+     * @type {boolean}
+     * @default true
+     */
+    CREDENTIALS: process.env.CORS_CREDENTIALS === 'false' ? false : true,
+  },
+
+  /**
    * Configuración de seguridad
    * Agrupa parámetros relacionados con autenticación y autorización
    */

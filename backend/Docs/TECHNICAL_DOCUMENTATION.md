@@ -2,7 +2,30 @@
 
 ## Resumen Ejecutivo
 
-Este proyecto implementa una API REST para gestión de productos siguiendo principios de **Arquitectura Hexagonal**, **Clean Architecture** y **Domain-Driven Design (DDD)**. La aplicación está construida con Node.js, Express, PostgreSQL y Sequelize, utilizando patrones avanzados de desarrollo de software.
+Este proyecto implementa una API REST completa para gestión de productos siguiendo principios de **Arquitectura Hexagonal**, **Clean Architecture** y **Domain-Driven Design (DDD)**. La aplicación está construida con Node.js 18+, Express 5, PostgreSQL y Sequelize, utilizando patrones avanzados como Repository, Unit of Work, Result Pattern e Inyección de Dependencias con Awilix.
+
+### Estado Actual del Proyecto
+
+**✅ Funcionalidades Implementadas:**
+- Creación de productos con validaciones de dominio
+- Consulta de todos los productos
+- Arquitectura hexagonal completa
+- Manejo robusto de errores con Result Pattern
+- Inyección de dependencias con contenedor IoC
+- Configuración CORS para desarrollo y producción
+- Base de datos PostgreSQL con Sequelize ORM
+- Scripts de inicialización de BD
+
+**🔄 En Desarrollo:**
+- Testing unitario e integración
+- Documentación OpenAPI/Swagger
+- Logging estructurado
+
+**📋 Roadmap:**
+- Operaciones CRUD completas (PUT, DELETE)
+- Paginación y filtros en API
+- Autenticación y autorización
+- Caché con Redis
 
 ## Arquitectura del Sistema
 
@@ -210,28 +233,50 @@ NODE_ENV=development|production|test
 PORT=3000
 
 # Base de Datos
-DB_NAME=nombre_base_datos
+DB_NAME=api_prueba
 DB_USER=usuario_postgresql
 DB_PASS=contraseña_postgresql
 DB_HOST=localhost
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+CORS_CREDENTIALS=true
 
 # Seguridad
 SALT_ROUNDS=10
 ```
 
+### Configuración CORS Implementada
+
+El sistema incluye configuración CORS robusta que:
+- ✅ Permite orígenes específicos desde variables de entorno
+- ✅ Maneja desarrollo y producción de forma diferente
+- ✅ Soporta credenciales (cookies, auth headers)
+- ✅ Incluye headers personalizados para APIs modernas
+- ✅ Implementa preflight caching para performance
+
 ### Scripts Disponibles
 
 ```bash
 # Desarrollo
-npm run dev          # Servidor con auto-reload
-npm run init-db      # Inicializar base de datos
+pnpm run dev         # Servidor con auto-reload (--watch flag)
+pnpm run init-db     # Inicializar base de datos y tablas
 
 # Producción
-npm start            # Servidor de producción
+pnpm start           # Servidor de producción
 
 # Utilidades
-npm test             # Tests (pendiente implementación)
+pnpm test            # Tests (pendiente implementación)
 ```
+
+### Inicialización de Base de Datos
+
+El proyecto incluye un script automatizado (`scripts/init-db.js`) que:
+- ✅ Verifica conexión a PostgreSQL
+- ✅ Crea tablas automáticamente
+- ✅ Sincroniza modelos de Sequelize
+- ✅ Maneja errores de conexión gracefully
+- ✅ Proporciona feedback detallado del proceso
 
 ## Consideraciones de Rendimiento
 

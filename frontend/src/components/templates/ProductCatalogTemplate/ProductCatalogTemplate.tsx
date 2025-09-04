@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Product } from '../../../types';
+import type { Product } from '../../../types';
 import { Header, FilterSidebar, ProductGrid } from '../../organisms';
 
 interface ProductCatalogTemplateProps {
@@ -22,6 +22,8 @@ interface ProductCatalogTemplateProps {
   totalProducts: number;
   /** Si hay filtros activos */
   hasActiveFilters: boolean;
+  /** Array de todos los productos (sin filtrar) para calcular rango dinámico */
+  allProducts: Product[];
   /** Función para actualizar término de búsqueda */
   onSearchChange: (value: string) => void;
   /** Función para actualizar rango de precios */
@@ -47,6 +49,7 @@ export const ProductCatalogTemplate: React.FC<ProductCatalogTemplateProps> = ({
   products,
   totalProducts,
   hasActiveFilters,
+  allProducts,
   onSearchChange,
   onPriceRangeChange,
   onSortOrderChange,
@@ -74,6 +77,7 @@ export const ProductCatalogTemplate: React.FC<ProductCatalogTemplateProps> = ({
               totalCount={totalProducts}
               searchTerm={searchValue}
               hasActiveFilters={hasActiveFilters}
+              products={allProducts}
               onPriceRangeChange={onPriceRangeChange}
               onSortOrderChange={onSortOrderChange}
               onClearFilters={onClearFilters}

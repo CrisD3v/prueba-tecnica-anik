@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Product } from '../../types';
+import type { Product } from '../../types';
 import { useProductFilters } from '../../hooks';
 import { ProductCatalogTemplate } from '../../components/templates';
 
@@ -56,6 +56,7 @@ export const ProductCatalogPage: React.FC<ProductCatalogPageProps> = ({
       products={filteredProducts}
       totalProducts={totalProducts}
       hasActiveFilters={hasActiveFilters}
+      allProducts={products}
       onSearchChange={updateSearchTerm}
       onPriceRangeChange={updatePriceRange}
       onSortOrderChange={updateSortOrder}

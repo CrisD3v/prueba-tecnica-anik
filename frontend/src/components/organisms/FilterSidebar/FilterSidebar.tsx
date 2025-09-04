@@ -3,7 +3,7 @@
  * Combina múltiples molecules para crear una sección completa de filtros
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import { Button } from '../../ui/button';
 import { 
@@ -11,6 +11,7 @@ import {
   SortToggle, 
   FilterStats 
 } from '../../molecules';
+import type { Product } from '../../../types';
 
 interface FilterSidebarProps {
   /** Rango de precios actual */
@@ -25,6 +26,8 @@ interface FilterSidebarProps {
   searchTerm: string;
   /** Si hay filtros activos */
   hasActiveFilters: boolean;
+  /** Array de productos para calcular rango dinámico */
+  products: Product[];
   /** Función para actualizar rango de precios */
   onPriceRangeChange: (range: [number, number]) => void;
   /** Función para cambiar orden */
@@ -45,10 +48,30 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   totalCount,
   searchTerm,
   hasActiveFilters,
+  products,
   onPriceRangeChange,
   onSortOrderChange,
   onClearFilters,
 }) => {
+  // Calcular rango dinámico de precios basado en los productos disponibles
+  const dynamicPriceRange = useMemo(() => {
+    if (products.length === 0) {
+      return { min: 0, max: 100 }; // Valores por defecto si no hay productos
+    }
+    
+    const prices = products.map(product => product.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    
+    // Agregar un pequeño margen para mejor UX
+    const margin = (maxPrice - minPrice) * 0.05; // 5% de margen
+    
+    return {
+      min: Math.max(0, Math.floor(minPrice - margin)),
+      max: Math.ceil(maxPrice + margin)
+    };
+  }, [products]);
+
   return (
     <div className="col-span-2 p-4 border-r bg-white">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
@@ -61,6 +84,8 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
         <PriceRangeFilter
           value={priceRange}
           onChange={onPriceRangeChange}
+          min={dynamicPriceRange.min}
+          max={dynamicPriceRange.max}
         />
 
         {/* Toggle para orden */}

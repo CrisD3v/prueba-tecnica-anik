@@ -1,12 +1,53 @@
 # Guía de Componentes - Atomic Design
 
-Esta guía proporciona documentación detallada de todos los componentes organizados según Atomic Design.
+Esta guía proporciona documentación detallada de todos los componentes implementados, organizados según los principios de Atomic Design y las mejores prácticas de React 19 con TypeScript.
+
+## 📋 Estado de Implementación
+
+### ✅ Completamente Implementados
+- Todos los componentes molecules (SearchBar, ProductCard, etc.)
+- Todos los componentes organisms (Header, FilterSidebar, ProductGrid)
+- Template principal (ProductCatalogTemplate)
+- Página principal (ProductCatalogPage)
+- Hooks personalizados (useProductFilters, useProducts)
+- Utilidades completas (textUtils, productUtils)
+
+### 🔄 En Desarrollo
+- Testing unitario de componentes
+- Storybook para documentación visual
+- Componentes adicionales para CRUD
+
+### 📋 Roadmap
+- Componentes de formulario avanzados
+- Componentes de navegación
+- Componentes de feedback (loading, error states)
 
 ## 🔧 Componentes UI (Atoms)
 
 Los componentes UI se mantienen en su ubicación original `/components/ui/` y sirven como los átomos básicos de la aplicación.
 
-Estos componentes hacen parte de la libreria shad/cn
+### shadcn/ui Components Utilizados
+
+**✅ Implementados:**
+- `Button` - Botones con variantes y tamaños
+- `Input` - Campos de entrada con validación
+- `Card` - Contenedores con header, content y footer
+- `Slider` - Control deslizante para rangos
+- `Switch` - Interruptor on/off
+- `Popover` - Elementos emergentes posicionados
+- `Label` - Etiquetas accesibles para formularios
+
+**🎨 Características:**
+- Totalmente accesibles (ARIA compliant)
+- Variantes configurables con class-variance-authority
+- Theming con CSS variables
+- TypeScript nativo
+- Composables y extensibles
+
+**📦 Instalación:**
+```bash
+npx shadcn@latest add button input card slider switch popover label
+```
 
 ---
 
@@ -325,11 +366,56 @@ interface ProductCatalogPageProps {
 
 ## 🎣 Hooks Personalizados
 
+### useProducts
+
+**Ubicación**: `/hooks/useProductFilters.ts`
+
+**Propósito**: Hook para obtener productos de la API con fallback automático a datos mock.
+
+**Características**:
+- ✅ TanStack Query para caché inteligente
+- ✅ Retry automático (1 intento)
+- ✅ Fallback a mock si API no disponible
+- ✅ Stale time de 5 minutos
+- ✅ Manejo de estados de loading y error
+
+**Ejemplo de uso**:
+```tsx
+const { data: products = [], isLoading, error } = useProducts();
+```
+
+### useCreateProduct
+
+**Ubicación**: `/hooks/useProductFilters.ts`
+
+**Propósito**: Hook para crear productos con optimistic updates.
+
+**Características**:
+- ✅ Mutación con TanStack Query
+- ✅ Optimistic updates para mejor UX
+- ✅ Invalidación automática de caché
+- ✅ Manejo de errores integrado
+
+**Ejemplo de uso**:
+```tsx
+const createProductMutation = useCreateProduct();
+
+const handleCreate = (productData) => {
+  createProductMutation.mutate(productData);
+};
+```
+
 ### useProductFilters
 
 **Ubicación**: `/hooks/useProductFilters.ts`
 
 **Propósito**: Hook que encapsula toda la lógica de filtros y búsqueda de productos.
+
+**Características Avanzadas**:
+- ✅ Memoización con useMemo para performance
+- ✅ Detección automática de filtros activos
+- ✅ Normalización de texto para búsquedas
+- ✅ Filtrado y ordenamiento optimizado
 
 **Parámetros**:
 ```typescript
@@ -357,16 +443,25 @@ interface UseProductFiltersReturn {
 }
 ```
 
-**Ejemplo de uso**:
+**Ejemplo de uso completo**:
 ```tsx
 const {
   searchTerm,
   priceRange,
+  isAscending,
   filteredProducts,
+  hasActiveFilters,
   updateSearchTerm,
   updatePriceRange,
+  updateSortOrder,
   clearFilters
-} = useProductFilters({ products: mockProducts });
+} = useProductFilters({ products });
+
+// Uso en componente
+<SearchBar value={searchTerm} onChange={updateSearchTerm} />
+<PriceRangeFilter value={priceRange} onChange={updatePriceRange} />
+<SortToggle isAscending={isAscending} onChange={updateSortOrder} />
+{hasActiveFilters && <Button onClick={clearFilters}>Limpiar</Button>}
 ```
 
 ---
@@ -375,17 +470,30 @@ const {
 
 ### textUtils
 
-**Funciones disponibles**:
+**Ubicación**: `/utils/textUtils.ts`
+
+**Funciones implementadas**:
 
 #### `normalizeText(text: string): string`
-Normaliza texto removiendo acentos y caracteres especiales.
+Normaliza texto removiendo acentos, caracteres especiales y convirtiendo a minúsculas.
+
+**Características**:
+- ✅ Maneja acentos españoles (á, é, í, ó, ú, ñ)
+- ✅ Convierte a minúsculas
+- ✅ Optimizado para búsquedas
 
 ```tsx
 const normalized = normalizeText("Lápiz Azúl"); // "lapiz azul"
+const search = normalizeText("Niño"); // "nino"
 ```
 
 #### `highlightSearchTerm(text: string, searchTerm: string): string`
 Resalta términos de búsqueda en un texto, considerando normalización.
+
+**Características**:
+- ✅ Búsqueda insensible a acentos
+- ✅ Resaltado con HTML mark
+- ✅ Clases TailwindCSS aplicadas
 
 ```tsx
 const highlighted = highlightSearchTerm("Lápiz Azul", "lapiz");
@@ -394,16 +502,68 @@ const highlighted = highlightSearchTerm("Lápiz Azul", "lapiz");
 
 ### productUtils
 
-**Funciones disponibles**:
+**Ubicación**: `/utils/productUtils.ts`
+
+**Funciones optimizadas**:
 
 #### `filterProducts(products: Product[], filters: ProductFilters): Product[]`
-Filtra productos basado en criterios de búsqueda y precio.
+Filtra productos por término de búsqueda y rango de precios.
+
+**Algoritmo**:
+- Normalización de texto para búsqueda insensible a acentos
+- Filtrado por rango de precios inclusivo
+- Optimizado para arrays grandes
 
 #### `sortProductsByPrice(products: Product[], isAscending: boolean): Product[]`
-Ordena productos por precio.
+Ordena productos por precio de forma eficiente.
+
+**Características**:
+- ✅ Ordenamiento estable
+- ✅ Manejo de precios decimales
+- ✅ Inmutable (no modifica array original)
 
 #### `filterAndSortProducts(products: Product[], filters: ProductFilters): Product[]`
 Operación combinada optimizada que filtra y ordena en una sola pasada.
+
+**Performance**:
+- ✅ Una sola iteración sobre el array
+- ✅ Memoización recomendada en componentes
+- ✅ Optimizado para re-renders frecuentes
+
+```tsx
+// Uso típico en hook
+const filteredProducts = useMemo(() => {
+  return filterAndSortProducts(products, {
+    searchTerm,
+    priceRange,
+    isAscending
+  });
+}, [products, searchTerm, priceRange, isAscending]);
+```
+
+### API Utils
+
+**Ubicación**: `/lib/api.ts`
+
+**Funciones de API**:
+
+#### `getProducts(): Promise<Product[]>`
+Obtiene productos de la API con fallback automático.
+
+**Características**:
+- ✅ Fallback a datos mock si API no disponible
+- ✅ Manejo de errores de red
+- ✅ Timeout configurado
+- ✅ Retry logic integrado
+
+#### `createProduct(product: Omit<Product, 'id'>): Promise<Product>`
+Crea un nuevo producto en la API.
+
+**Características**:
+- ✅ Validación de datos
+- ✅ Manejo de errores HTTP
+- ✅ Respuesta tipada
+- ✅ Integración con TanStack Query
 
 ---
 
@@ -436,36 +596,66 @@ export const SORT_OPTIONS = {
 ## 🎯 Mejores Prácticas Implementadas
 
 ### 1. **Separación de Responsabilidades**
-- Cada componente tiene una responsabilidad específica
-- Lógica separada en hooks y utilidades
-- Presentación separada de la lógica de negocio
+- ✅ Cada componente tiene una responsabilidad específica
+- ✅ Lógica separada en hooks y utilidades
+- ✅ Presentación separada de la lógica de negocio
+- ✅ Estado del servidor manejado por TanStack Query
 
 ### 2. **Reutilización de Código**
-- Componentes atómicos reutilizables
-- Hooks personalizados para lógica compartida
-- Utilidades para operaciones comunes
+- ✅ Componentes atómicos reutilizables (shadcn/ui)
+- ✅ Hooks personalizados para lógica compartida
+- ✅ Utilidades para operaciones comunes
+- ✅ Tipos TypeScript exportados y reutilizados
 
-### 3. **Tipado Fuerte**
-- Todas las props están tipadas con TypeScript
-- Interfaces bien definidas para cada nivel
-- Tipos exportados para reutilización
+### 3. **Tipado Fuerte y Seguridad**
+- ✅ TypeScript estricto en toda la aplicación
+- ✅ Interfaces bien definidas para cada nivel
+- ✅ Tipos de utilidad para mejor DX
+- ✅ Validación en tiempo de compilación
 
-### 4. **Documentación**
-- JSDoc en todos los componentes
-- Comentarios explicativos en código complejo
-- Ejemplos de uso en esta guía
+### 4. **Performance Optimizada**
+- ✅ useMemo para cálculos costosos de filtros
+- ✅ useCallback para funciones estables
+- ✅ TanStack Query para caché inteligente
+- ✅ Componentes optimizados para re-renders mínimos
 
-### 5. **Performance**
-- useMemo para cálculos costosos
-- Componentes optimizados para re-renders
-- Separación de estado para evitar renders innecesarios
+### 5. **Accesibilidad (a11y)**
+- ✅ Componentes shadcn/ui con ARIA completo
+- ✅ Labels apropiados en todos los formularios
+- ✅ Estructura semántica correcta
+- ✅ Navegación por teclado funcional
+- ✅ Contraste de colores adecuado
 
-### 6. **Accesibilidad**
-- Labels apropiados en formularios
-- Estructura semántica correcta
-- Navegación por teclado considerada
+### 6. **User Experience (UX)**
+- ✅ Estados de carga bien definidos
+- ✅ Manejo graceful de errores
+- ✅ Fallback automático a datos mock
+- ✅ Feedback visual inmediato
+- ✅ Animaciones suaves con TailwindCSS
 
-### 7. **Mantenibilidad**
-- Estructura de carpetas clara y consistente
-- Nombres descriptivos y convenciones consistentes
-- Exportaciones centralizadas para fácil importación
+### 7. **Developer Experience (DX)**
+- ✅ Hot Module Replacement con Vite
+- ✅ TypeScript con autocompletado inteligente
+- ✅ ESLint configurado para mejores prácticas
+- ✅ Estructura de carpetas intuitiva
+- ✅ Documentación JSDoc completa
+
+### 8. **Mantenibilidad y Escalabilidad**
+- ✅ Atomic Design para crecimiento ordenado
+- ✅ Convenciones de naming consistentes
+- ✅ Exportaciones centralizadas
+- ✅ Separación clara de concerns
+- ✅ Patrones establecidos para nuevas features
+
+### 9. **Testing Ready**
+- ✅ Componentes aislados y testeable
+- ✅ Props bien definidas para mocking
+- ✅ Lógica separada en utilidades puras
+- ✅ Hooks personalizados testeable independientemente
+
+### 10. **Modern React Patterns**
+- ✅ React 19 con las últimas características
+- ✅ Functional components exclusivamente
+- ✅ Custom hooks para lógica reutilizable
+- ✅ Composition over inheritance
+- ✅ Immutable state patterns

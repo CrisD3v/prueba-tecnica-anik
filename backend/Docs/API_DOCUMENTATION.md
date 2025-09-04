@@ -4,8 +4,10 @@
 
 - **Base URL**: `http://localhost:3000/api`
 - **Formato de datos**: JSON
-- **Autenticación**: No implementada (pendiente)
-- **Versionado**: No implementado (pendiente)
+- **Autenticación**: No implementada (roadmap v1.3)
+- **Versionado**: No implementado (roadmap v2.0)
+- **CORS**: Configurado para desarrollo (`localhost:5173`) y producción
+- **Arquitectura**: RESTful API siguiendo principios REST
 
 ## Códigos de Estado HTTP
 
@@ -22,12 +24,12 @@
 ### Respuesta Exitosa
 ```json
 {
-  "id": "uuid",
-  "name": "string",
-  "price": "decimal",
-  "stock": "integer",
-  "createdAt": "datetime",
-  "updatedAt": "datetime"
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Producto Ejemplo",
+  "price": 29.99,
+  "stock": 100,
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
 }
 ```
 
@@ -80,6 +82,8 @@ Crea un nuevo producto en el sistema.
 **Posibles Errores:**
 - `400 PRODUCT_ALREADY_EXISTS`: El producto ya existe
 - `400 VALIDATION_ERROR`: Datos de entrada inválidos
+- `400 MISSING_FIELDS`: Campos requeridos faltantes
+- `500 INTERNAL_ERROR`: Error interno del servidor
 
 #### Obtener Todos los Productos
 
@@ -112,7 +116,8 @@ Obtiene la lista completa de productos disponibles.
 ```
 
 **Posibles Errores:**
-- `400 PRODUCT_NOT_FOUND`: No se encontraron productos
+- `404 PRODUCT_NOT_FOUND`: No se encontraron productos
+- `500 INTERNAL_ERROR`: Error interno del servidor
 
 ## Ejemplos de Uso Completos
 
@@ -231,12 +236,35 @@ const getProducts = async () => {
 | `PRODUCT_ALREADY_EXISTS` | Ya existe un producto con ese nombre | Usar un nombre diferente |
 | `PRODUCT_NOT_CREATED` | Error al crear el producto | Verificar datos y conexión a BD |
 | `PRODUCT_NOT_FOUND` | No se encontraron productos | Crear productos primero |
+| `MISSING_FIELDS` | Campos requeridos faltantes | Enviar name, price y stock |
 | `VALIDATION_ERROR` | Datos de entrada inválidos | Verificar formato de los datos |
 | `INTERNAL_ERROR` | Error interno del servidor | Contactar al administrador |
 
 ## Consideraciones de Rendimiento
 
-- **Paginación**: No implementada (recomendada para listas grandes)
-- **Filtros**: No implementados (recomendados para búsquedas específicas)
-- **Caché**: No implementado (recomendado para consultas frecuentes)
-- **Rate Limiting**: No implementado (recomendado para producción)
+- **Paginación**: No implementada (roadmap v1.2)
+- **Filtros**: No implementados en API (implementados en frontend)
+- **Caché**: No implementado (roadmap v2.0 con Redis)
+- **Rate Limiting**: No implementado (roadmap v1.3)
+- **Índices BD**: Configurados en campos principales
+- **Pool de conexiones**: Manejado automáticamente por Sequelize
+
+## Estado Actual vs Roadmap
+
+### ✅ Implementado
+- Endpoints básicos GET y POST
+- Validaciones de dominio robustas
+- Manejo de errores con Result Pattern
+- Arquitectura hexagonal completa
+- CORS configurado correctamente
+
+### 🔄 En Desarrollo
+- Testing automatizado
+- Documentación OpenAPI
+- Logging estructurado
+
+### 📋 Próximas Versiones
+- **v1.1**: CRUD completo (PUT, DELETE)
+- **v1.2**: Paginación y filtros
+- **v1.3**: Autenticación y rate limiting
+- **v2.0**: GraphQL y caché avanzado

@@ -1,11 +1,38 @@
-/**
- * Hook personalizado para manejo de filtros de productos
- */
-
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getProducts, createProduct, productQueries } from '../lib/api';
 import { useState, useMemo } from 'react';
-import { Product, ProductFilters, FilterState } from '../types';
+import type { Product, ProductFilters, FilterState } from '../types';
 import { filterAndSortProducts } from '../utils';
 import { PRICE_RANGE, SORT_OPTIONS } from '../constants/filters';
+
+// Hook para obtener productos (con fallback automático al mock)
+export const useProducts = () => {
+  return useQuery({
+    queryKey: productQueries.lists(),
+    queryFn: getProducts,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    retry: 1, // Solo reintentar una vez antes de usar mock
+  });
+};
+
+// Hook para crear productos
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: createProduct,
+    onSuccess: (newProduct) => {
+      // Actualizar cache local si la API no está disponible
+      queryClient.setQueryData(productQueries.lists(), (oldData: Product[] | undefined) => {
+        if (!oldData) return [newProduct];
+        return [...oldData, newProduct];
+      });
+      
+      // También invalidar para refrescar desde la API si está disponible
+      queryClient.invalidateQueries({ queryKey: productQueries.lists() });
+    },
+  });
+};
 
 interface UseProductFiltersProps {
   products: Product[];
@@ -29,7 +56,7 @@ export const useProductFilters = ({
 }: UseProductFiltersProps): UseProductFiltersReturn => {
   const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState<[number, number]>(PRICE_RANGE.DEFAULT);
-  const [isAscending, setIsAscending] = useState(SORT_OPTIONS.ASCENDING);
+  const [isAscending, setIsAscending] = useState<boolean>(SORT_OPTIONS.ASCENDING);
 
   // Memoizar productos filtrados para optimizar rendimiento
   const filteredProducts = useMemo(() => {

@@ -1,6 +1,23 @@
 # Arquitectura del Proyecto - Atomic Design
 
-Este proyecto ha sido refactorizado siguiendo los principios de **Atomic Design**, **Component Pattern**, **Clean Code** y **mejores prácticas** de React.
+Este proyecto implementa una arquitectura moderna siguiendo los principios de **Atomic Design**, **Clean Architecture**, **Component Pattern** y **mejores prácticas** de React 19 con TypeScript.
+
+## 🎯 Principios Arquitectónicos
+
+### 1. Atomic Design
+Organización jerárquica de componentes desde elementos básicos hasta páginas completas.
+
+### 2. Separación de Responsabilidades
+- **Presentación**: Componentes UI puros
+- **Lógica**: Custom hooks y utilidades
+- **Estado**: TanStack Query para servidor, useState para local
+- **Tipos**: Interfaces TypeScript bien definidas
+
+### 3. Composición sobre Herencia
+Componentes pequeños y composables que se combinan para crear funcionalidades complejas.
+
+### 4. Inmutabilidad y Funcional
+Uso de patrones funcionales, hooks y estado inmutable.
 
 ## 📁 Estructura del Proyecto
 
@@ -161,26 +178,43 @@ interface ProductFilters {
 - Componentes pequeños y enfocados en una sola responsabilidad
 - Fácil localización y modificación de funcionalidades específicas
 - Separación clara entre lógica y presentación
+- TypeScript previene errores en tiempo de compilación
 
 ### 2. **Reutilización**
 - Componentes atómicos reutilizables en diferentes contextos
 - Molecules que pueden combinarse de diferentes formas
 - Hooks personalizados que encapsulan lógica compleja
+- Utilidades compartidas entre componentes
 
 ### 3. **Escalabilidad**
 - Estructura clara para agregar nuevos componentes
 - Fácil extensión de funcionalidades existentes
 - Patrones consistentes en toda la aplicación
+- Arquitectura preparada para crecimiento
 
 ### 4. **Testabilidad**
 - Componentes aislados fáciles de testear
 - Lógica separada en utils y hooks
 - Props bien definidas y tipadas
+- Mocking simplificado con inyección de dependencias
 
-### 5. **Legibilidad**
-- Código autodocumentado con nombres descriptivos
-- Comentarios JSDoc en todos los componentes
-- Estructura de carpetas intuitiva
+### 5. **Performance**
+- Componentes optimizados con useMemo y useCallback
+- TanStack Query maneja caché inteligente
+- Lazy loading preparado para implementar
+- Bundle splitting automático con Vite
+
+### 6. **Developer Experience**
+- TypeScript con autocompletado inteligente
+- Hot Module Replacement ultra-rápido con Vite
+- ESLint configurado para mejores prácticas
+- Documentación JSDoc integrada
+
+### 7. **Accesibilidad**
+- Componentes shadcn/ui con a11y built-in
+- Estructura semántica correcta
+- Navegación por teclado considerada
+- ARIA labels apropiados
 
 ## 🚀 Cómo Usar
 
@@ -199,8 +233,44 @@ interface ProductFilters {
 
 ## 📝 Convenciones de Código
 
-- **Nombres**: PascalCase para componentes, camelCase para funciones
-- **Archivos**: Cada componente en su propia carpeta con `index.ts`
-- **Props**: Interfaces tipadas con JSDoc
-- **Comentarios**: JSDoc para todos los componentes públicos
-- **Exports**: Exportaciones centralizadas en `index.ts`
+### Naming Conventions
+- **Componentes**: PascalCase (`ProductCard`, `SearchBar`)
+- **Funciones**: camelCase (`filterProducts`, `normalizeText`)
+- **Hooks**: camelCase con prefijo `use` (`useProductFilters`)
+- **Tipos**: PascalCase (`Product`, `ProductFilters`)
+- **Constantes**: UPPER_SNAKE_CASE (`PRICE_RANGE`, `SORT_OPTIONS`)
+
+### File Structure
+- **Componentes**: Cada uno en su carpeta con `index.ts` para exportación
+- **Hooks**: Un hook por archivo en `/hooks/`
+- **Tipos**: Agrupados por dominio en `/types/`
+- **Utilidades**: Funciones relacionadas agrupadas
+
+### TypeScript Standards
+- Interfaces para props y tipos de datos
+- Tipos de utilidad cuando sea apropiado (`Partial<T>`, `Pick<T>`)
+- Evitar `any`, usar `unknown` cuando sea necesario
+- Exportar tipos para reutilización
+
+### Documentation Standards
+- JSDoc para todos los componentes públicos
+- Comentarios inline para lógica compleja
+- README actualizado con cambios arquitectónicos
+- Ejemplos de uso en documentación
+
+### Import/Export Standards
+```typescript
+// Exportaciones nombradas preferidas
+export const ProductCard = () => { ... };
+
+// Exportaciones centralizadas
+export { ProductCard } from './ProductCard';
+export { SearchBar } from './SearchBar';
+
+// Imports organizados
+import React from 'react';
+import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { useProductFilters } from '@/hooks';
+import type { Product } from '@/types';
+```

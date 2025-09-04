@@ -17,6 +17,7 @@
  */
 
 import express from 'express';
+import cors from 'cors';
 import { buildContainer } from './Config/container.js';
 import { sequelize } from './Config/Db.js';
 import { env } from './Config/env.js';
@@ -62,6 +63,80 @@ async function main() {
 
     // === FASE 4: CONFIGURACIÓN DEL SERVIDOR EXPRESS ===
     const app = express();
+    
+    // === CONFIGURACIÓN DE CORS ===
+    // Configurar CORS para permitir requests desde el frontend
+    const corsOptions = {
+      // Configurar orígenes permitidos desde variables de entorno
+      origin: function (origin, callback) {
+        // En desarrollo, permitir requests sin origin (ej: Postman, curl)
+        if (env.NODE_ENV === 'development' && !origin) {
+          return callback(null, true);
+        }
+        
+        // Obtener lista de orígenes permitidos desde configuración
+        const allowedOrigins = env.CORS.ALLOWED_ORIGINS.split(',').map(o => o.trim());
+        
+        // En desarrollo, ser más permisivo
+        if (env.NODE_ENV === 'development') {
+          // Permitir localhost con cualquier puerto
+          if (origin && origin.includes('localhost')) {
+            return callback(null, true);
+          }
+          // Permitir 127.0.0.1 con cualquier puerto
+          if (origin && origin.includes('127.0.0.1')) {
+            return callback(null, true);
+          }
+        }
+        
+        // Verificar si el origen está en la lista permitida
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          console.warn(`🚫 CORS: Origen no permitido: ${origin}`);
+          callback(new Error('No permitido por política CORS'));
+        }
+      },
+      
+      // Métodos HTTP permitidos
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      
+      // Headers permitidos en requests
+      allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+        'Cache-Control',
+        'X-File-Name'
+      ],
+      
+      // Headers que el cliente puede leer
+      exposedHeaders: [
+        'X-Total-Count',
+        'X-Page-Count',
+        'Link'
+      ],
+      
+      // Permitir envío de credenciales (cookies, auth headers)
+      credentials: env.CORS.CREDENTIALS,
+      
+      // Status code para OPTIONS preflight exitoso
+      optionsSuccessStatus: 200,
+      
+      // Cache del preflight request (24 horas)
+      maxAge: 86400
+    };
+    
+    app.use(cors(corsOptions));
+    
+    // Logging de configuración CORS en desarrollo
+    if (env.NODE_ENV === 'development') {
+      console.log('🌐 CORS configurado para desarrollo');
+      console.log('   Orígenes permitidos:', env.CORS.ALLOWED_ORIGINS);
+      console.log('   Credenciales habilitadas:', env.CORS.CREDENTIALS);
+    }
     
     // Middleware para parsear JSON en requests
     // Límite por defecto: 100kb

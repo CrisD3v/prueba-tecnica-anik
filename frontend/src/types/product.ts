@@ -3,10 +3,11 @@
  */
 
 export interface Product {
-  id: number;
+  id: string | number; // Compatible con mock (number) y API (string)
   name: string;
   price: number;
-  image: string;
+  image?: string; // Opcional para compatibilidad
+  stock?: number; // Opcional, solo para productos de la API
 }
 
 export interface ProductFilters {

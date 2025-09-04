@@ -6,7 +6,7 @@
 import React from 'react';
 import { Card } from '../../ui/card';
 import { Button } from '../../ui/button';
-import { Product } from '../../../types';
+import type { Product } from '../../../types';
 import { highlightSearchTerm } from '../../../utils';
 
 interface ProductCardProps {
@@ -40,7 +40,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <Card className="w-full max-w-xs transition-shadow duration-300 border-none shadow-none">
       <Card.Content className="p-2">
         <img
-          src={product.image}
+          src={product.image || 'https://placehold.co/640x480?text=Test'}
           alt={product.name}
           className="w-full h-48 object-cover rounded-md hover:scale-105 transition-transform duration-300"
         />
